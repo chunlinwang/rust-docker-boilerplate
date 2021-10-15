@@ -4,9 +4,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      target: base
     tty: true # if not build app.
     environment:
       RUST_BACKTRACE: full
-
-    volumes:
-      - ./:/code
+    ports: 
+      - "3000:3000"
