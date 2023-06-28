@@ -7,7 +7,8 @@ use chrono::NaiveDateTime;
 #[derive(Queryable, Identifiable, Debug, PartialEq)]
 pub struct Tax {
     pub id: String,
-    pub email: String,
+    pub title: String,
+    pub value: Int4,
     pub active: bool,
     pub created_at: NaiveDateTime,
     pub updated_at: NaiveDateTime,

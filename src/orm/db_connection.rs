@@ -1,5 +1,5 @@
+use diesel::prelude::*;
 use diesel::r2d2::ConnectionManager;
-use diesel::PgConnection;
 use r2d2::Pool;
 
 // connection simple
@@ -14,7 +14,7 @@ use r2d2::Pool;
 
 /// connection pool
 pub fn get_establish_connection(database_url: String) -> Pool<ConnectionManager<PgConnection>> {
-    let manager:ConnectionManager<PgConnection> = ConnectionManager::<PgConnection>::new(database_url);
+    let manager = ConnectionManager::<PgConnection>::new(database_url);
 
     r2d2::Pool::builder().build(manager).expect("Failed to create pool.")
 }

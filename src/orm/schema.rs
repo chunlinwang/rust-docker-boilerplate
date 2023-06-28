@@ -1,4 +1,4 @@
-table! {
+diesel::table! {
     addresses (id) {
         id -> Varchar,
         title -> Varchar,
@@ -12,7 +12,7 @@ table! {
     }
 }
 
-table! {
+diesel::table! {
     categories (id) {
         id -> Varchar,
         #[sql_name = "type"]
@@ -23,14 +23,14 @@ table! {
     }
 }
 
-table! {
+diesel::table! {
     images (id) {
         id -> Varchar,
         hash -> Varchar,
     }
 }
 
-table! {
+diesel::table! {
     lovelists (id) {
         id -> Varchar,
         product_id -> Varchar,
@@ -40,7 +40,7 @@ table! {
     }
 }
 
-table! {
+diesel::table! {
     newsletters (id) {
         id -> Varchar,
         email -> Varchar,
@@ -50,14 +50,14 @@ table! {
     }
 }
 
-table! {
+diesel::table! {
     product_image (product_id, image_id) {
         product_id -> Varchar,
         image_id -> Varchar,
     }
 }
 
-table! {
+diesel::table! {
     product_price (id) {
         id -> Varchar,
         price -> Int4,
@@ -70,7 +70,7 @@ table! {
     }
 }
 
-table! {
+diesel::table! {
     products (id) {
         id -> Varchar,
         title -> Nullable<Jsonb>,
@@ -82,7 +82,7 @@ table! {
     }
 }
 
-table! {
+diesel::table! {
     promocodes (id) {
         id -> Varchar,
         #[sql_name = "type"]
@@ -95,7 +95,7 @@ table! {
     }
 }
 
-table! {
+diesel::table! {
     purchase_addresses (id) {
         id -> Varchar,
         address -> Varchar,
@@ -109,7 +109,7 @@ table! {
     }
 }
 
-table! {
+diesel::table! {
     purchase_item (id) {
         id -> Varchar,
         product_info -> Jsonb,
@@ -118,7 +118,7 @@ table! {
     }
 }
 
-table! {
+diesel::table! {
     purchases (id) {
         id -> Varchar,
         price_vat_inc -> Int4,
@@ -134,15 +134,18 @@ table! {
     }
 }
 
-table! {
+diesel::table! {
     taxs (id) {
         id -> Varchar,
         title -> Varchar,
         value -> Int4,
+        active -> Bool,
+        created_at -> Timestamp,
+        update_at -> Timestamp,
     }
 }
 
-table! {
+diesel::table! {
     users (id) {
         id -> Varchar,
         username -> Varchar,
@@ -158,17 +161,17 @@ table! {
     }
 }
 
-joinable!(addresses -> users (user_id));
-joinable!(lovelists -> products (product_id));
-joinable!(lovelists -> users (user_id));
-joinable!(product_image -> images (image_id));
-joinable!(product_image -> products (product_id));
-joinable!(product_price -> taxs (tax));
-joinable!(products -> categories (category_id));
-joinable!(purchase_item -> purchases (purchase_id));
-joinable!(purchases -> users (user_id));
+diesel::joinable!(addresses -> users (user_id));
+diesel::joinable!(lovelists -> products (product_id));
+diesel::joinable!(lovelists -> users (user_id));
+diesel::joinable!(product_image -> images (image_id));
+diesel::joinable!(product_image -> products (product_id));
+diesel::joinable!(product_price -> taxs (tax));
+diesel::joinable!(products -> categories (category_id));
+diesel::joinable!(purchase_item -> purchases (purchase_id));
+diesel::joinable!(purchases -> users (user_id));
 
-allow_tables_to_appear_in_same_query!(
+diesel::allow_tables_to_appear_in_same_query!(
     addresses,
     categories,
     images,

@@ -25,7 +25,6 @@ pub fn show() {
         .load::<Newsletter>(&conn)
         .expect("Error loading posts");
 
-    println!("i am here");
     for n in results {
         println!("{}", n.id);
         //newsletterObjects.push(serde_json::to_string(&n))

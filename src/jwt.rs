@@ -1,4 +1,5 @@
 use serde::{Serialize, Deserialize};
+use jsonwebtoken::errors::ErrorKind;
 use jsonwebtoken::{encode, decode, Header, Algorithm, Validation, EncodingKey, DecodingKey, TokenData};
 use chrono::{Local, Duration};
 use std::ops::Add;
@@ -22,7 +23,7 @@ pub fn build_token() -> Result<String, Error> {
     let mut header = Header::new(Algorithm::RS512);
     header.kid = Some(vars::cert_kid());
 
-    let now = Local::now();
+    let now: chrono::DateTime<Local> = Local::now();
 
     let my_claims: TokenClaims = TokenClaims {
         aud: "".to_string(),
@@ -34,16 +35,38 @@ pub fn build_token() -> Result<String, Error> {
         company: "ACME".to_owned()
     };
 
-    let encodingKey: EncodingKey = EncodingKey::from_rsa_pem(include_bytes!("../cert/private.pem"))?;
+    let encoding_key: EncodingKey = EncodingKey::from_rsa_pem(include_bytes!("../cert/private.pem")).unwrap();
 
-    encode(&header, &my_claims, &encodingKey)
+    encode(&header, &my_claims, &encoding_key)
 }
 
-pub fn validate_token(token: String) -> Result<TokenData<TokenClaims>, Error> {
-    let mut validation: Validation = jsonwebtoken::Validation::new(Algorithm::RS512);
+pub fn validate_token(token: String) -> TokenData<TokenClaims> {
+    let mut validation: Validation = Validation::new(Algorithm::RS512);
     validation.validate_exp = true;
 
-    let decodingKey: DecodingKey = DecodingKey::from_rsa_pem(include_bytes!("../cert/public.pem"))?;
+    let decoding_key: DecodingKey = DecodingKey::from_rsa_pem(include_bytes!("../cert/public.pem")).unwrap();
 
-    decode::<TokenClaims>(token.as_str(), &decodingKey, &validation)
+    let token_data = match decode::<TokenClaims>(token.as_str(), &decoding_key, &validation) {
+        Ok(c) => c,
+        Err(err) => match *err.kind() {
+            ErrorKind::InvalidToken => panic!("Token is invalid"), // Example on how to handle a specific error
+            ErrorKind::InvalidIssuer => panic!("Issuer is invalid"), // Example on how to handle a specific error
+            _ => panic!("Some other errors"),
+        },
+    };
+
+    token_data
+}
+
+#[cfg(test)]
+mod tests_jwt {
+    use super::*;
+
+    #[test]
+    fn validate_jwt_token() {
+        let token = build_token();
+        let expected = validate_token(token.unwrap());
+
+        assert_eq!("ACME", expected.claims.company);
+    }
 }

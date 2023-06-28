@@ -1,5 +1,5 @@
 use diesel::prelude::*;
-use crate::orm::schema::newsletters;
+// use crate::orm::schema::newsletters;
 use crate::orm::db_connection::*;
 use serde::{Serialize, Deserialize };
 use chrono::NaiveDateTime;

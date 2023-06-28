@@ -12,6 +12,6 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Paginated {
-    offset: Option<i64>,
-    limit: Option<i64>,
+    offset: Option<usize>,
+    limit: Option<usize>,
 }
