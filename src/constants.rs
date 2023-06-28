@@ -1,0 +1,1 @@
+pub const AUTHENTICATION_COOKIE_NAME: &str = "site_auth";

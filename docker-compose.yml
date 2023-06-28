@@ -1,0 +1,43 @@
+version: "3.7"
+services:
+  actix:
+    build:
+      context: ./dockerfiles/actix
+      dockerfile: Dockerfile
+    ports:
+      - "8808:8808"
+    depends_on:
+      - db
+    networks:
+      - app
+    tty: true # if not build app.
+    environment:
+      RUST_BACKTRACE: full
+    volumes:
+    - ./:/app
+
+  db:
+    image: postgres:12
+    environment:
+      POSTGRES_USER: rshop
+      POSTGRES_PASSWORD: rshop
+      POSTGRES_DB: rshop
+    ports:
+      - "5432:5432"
+    networks:
+      - app
+    volumes:
+      - ./docker-data/initdb/:/docker-entrypoint-initdb.d/
+      - db-data:/var/lib/postgresql/data
+
+  image_storage:
+    image: minimalcompact/thumbor
+    environment:
+      THUMBOR_NUM_PROCESSES: 4
+
+networks:
+  app:
+    driver: bridge
+
+volumes:
+  db-data:

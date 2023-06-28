@@ -1,0 +1,10 @@
+/target
+.vscode/
+.idea/
+.vendor
+.DS_Store
+.AppleDouble
+.LSOverride
+**/*.rs.bk
+.env
+.DS_Store
